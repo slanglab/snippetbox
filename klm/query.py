@@ -3,6 +3,8 @@ from __future__ import division
 import kenlm
 import json
 
+# for corpus formatting see-> https://kheafield.com/code/kenlm/estimation/ esp on <s> and </s> tags
+# https://github.com/kpu/kenlm/blob/master/python/example.py. what's up w/ <s> and </s>
 
 def get_unigram_probs(unigram_loc):
     with open(unigram_loc, "r") as inf:
@@ -34,6 +36,14 @@ class LM:
 
     def score(self, str_):
         # str_ is a " "-delimited string, e.g. "I am a student"
+        words = ['<s>'] + str_.split() + ['</s>']
+
+        for i, (prob, length, oov) in enumerate(self.model.full_scores(str_)):
+            print('{0} {1}: {2}'.format(prob, length, ' '.join(words[i+2-length:i+2])))
+            if oov:
+                print('\t"{0}" is an OOV'.format(words[i+1]))
+
+
 
         return self.model.score(str_)
 
