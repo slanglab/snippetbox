@@ -24,7 +24,7 @@ with open("corpora/data_ccrit.spacy.jsonl", "w") as of:
         phrases = phrasemachine.get_phrases(tokens=tokens,
                                             postags=pos)
 
-        comment["phrases"] = phrases["counts"].keys()
+        comment["phrases"] = list(phrases["counts"].keys())
 
         comment["tokens"] = tokens
 
