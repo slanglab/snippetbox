@@ -7,7 +7,7 @@ import json
 import phrasemachine
 
 
-def preproc_civic():
+def preprocess():
 
     nlp = spacy.load("en_core_web_sm")
 
