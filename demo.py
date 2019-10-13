@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     comments = []
 
-    K = 50
+    K = 15
 
     with open("corpora/data_ccrit.spacy.jsonl", "r") as inf:
         for i in inf:
