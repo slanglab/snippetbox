@@ -5,34 +5,40 @@ Methods for computing salience functions
 import numpy as np
 
 
-class pmiSalience(object):
+class PMI(object):
     '''
     Sample Use
-    helper = pmiHelper(docs)
+    helper = PMI(docs)
 
     Each doc is a dictionary with "tokens" and a "docid"
 
     a = helper.compute_pmi(word='fountain', context=[1,5,7,9]) where context is docids
     see https://web.stanford.edu/~jurafsky/slp3/6.pdf on PMI
     '''
-    def __init__(self, docs):
+    def __init__(self, docs, stop_words=None, smoothing=1):
 
         V = set(v for doc in docs for v in doc["tokens"])
 
+        if stop_words is not None:
+            V = set(i for i in V if i not in stop_words)
+        else:
+            stop_words = []  # needed for loop below
+
         self.v2n = {v: k for k, v in enumerate(V)}
 
-        # map from docno to columnno in TDM
-        self.context2n = {v["docno"]: k for k, v in enumerate(docs)}
+        # map from docid to columnno in TDM
+        self.context2n = {v["docid"]: k for k, v in enumerate(docs)}
 
         tdm = np.zeros((len(V), len(docs)))
 
         # plus one smoothing to fix some issues w/ PMI (see jurafsky book)
-        tdm += 1
+        tdm += smoothing
 
         for docno, doc in enumerate(docs):
             toks = doc["tokens"]
             for tok in toks:
-                tdm[self.tok2n[tok]][doc["docid"]] += 1
+                if tok not in stop_words:
+                    tdm[self.v2n[tok]][doc["docid"]] += 1
 
         self.grand_total = np.sum(tdm)
         self.tdm = tdm
@@ -53,3 +59,15 @@ class pmiSalience(object):
         p_context = np.sum(self.tdm[:, context_column_indexes])/self.grand_total
 
         return np.log(p_word_context/(p_word * p_context))
+
+    def rank_V_by_pmi(self, docids):
+
+        V = self.v2n.keys()
+        tot = []
+        for v in V:
+            c = self.compute_pmi(v, docids)
+            tot.append((c, v))
+
+        tot.sort(key=lambda x: x[0], reverse=True)
+
+        return tot
