@@ -15,6 +15,8 @@ if __name__ == "__main__":
     stop_words = get_stops()
     idea = 'Platform connected with bridges'
 
+    preprocess()
+
     comments = []
 
     K = 15
