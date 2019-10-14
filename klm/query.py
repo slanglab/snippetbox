@@ -44,7 +44,6 @@ class LM:
                 print('\t"{0}" is an OOV'.format(words[i+1]))
 
 
-
         return self.model.score(str_)
 
 
