@@ -4,6 +4,7 @@ chardet==3.0.4
 cymem==2.0.2
 en-core-web-sm==2.2.0
 idna==2.8
+kenlm==0.0.0
 murmurhash==1.0.2
 nltk==3.4.5
 numpy==1.17.2
@@ -14,6 +15,7 @@ requests==2.22.0
 six==1.12.0
 spacy==2.2.1
 srsly==0.1.0
+stop-words==2018.7.23
 thinc==7.1.1
 tqdm==4.36.1
 urllib3==1.25.6
