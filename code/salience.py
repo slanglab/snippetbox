@@ -51,6 +51,8 @@ class PMI(object):
         '''
 
         context_column_indexes = [self.context2n[o] for o in context]
+        if word not in self.v2n:
+            return 0
         word_index = self.v2n[word]
 
         count_word_context = np.sum(self.tdm[word_index][context_column_indexes])

@@ -10,7 +10,6 @@ def load_fn(fn = "corpora/data_ccrit.spacy.jsonl"):
     with open(fn, "r") as inf:
         for i in inf:
             i = json.loads(i)
-            i["tokens"] = [j for j in i["tokens"] if j.lower() not in stop_words] 
             comments.append(i)
     return comments
 

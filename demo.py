@@ -72,7 +72,7 @@ if __name__ == "__main__":
                             f_salience=smi.salience,
                             f_redundancy=jaccard,
                             scorer=scorer.min_slor_scorer,
-                            b=args.b) 
+                            b=None)#args.b) 
     end_time =  datetime.datetime.now()    
 
     print("***")
