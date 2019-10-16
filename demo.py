@@ -60,4 +60,4 @@ if __name__ == "__main__":
 
     delta = (end_time - start_time)
 
-    print("[*] total time={} seconds".format(delta.total_seconds()))
+    print("[*] total time={} seconds, N docs={}".format(delta.total_seconds(), len(subset_docs)))
