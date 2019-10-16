@@ -34,14 +34,16 @@ class LM:
 
         self.model = kenlm.LanguageModel(loc)
 
-    def score(self, str_):
+    def score(self, str_, verbose=False):
         # str_ is a " "-delimited string, e.g. "I am a student"
         words = ['<s>'] + str_.split() + ['</s>']
 
-        for i, (prob, length, oov) in enumerate(self.model.full_scores(str_)):
-            print('{0} {1}: {2}'.format(prob, length, ' '.join(words[i+2-length:i+2])))
-            if oov:
-                print('\t"{0}" is an OOV'.format(words[i+1]))
+
+        if verbose:
+            for i, (prob, length, oov) in enumerate(self.model.full_scores(str_)):
+                print('{0} {1}: {2}'.format(prob, length, ' '.join(words[i+2-length:i+2])))
+                if oov:
+                    print('\t"{0}" is an OOV'.format(words[i+1]))
 
 
         return self.model.score(str_)
@@ -58,7 +60,6 @@ if __name__ == "__main__":
 
     env = ENVIRONMENTS[args.environment.upper()]
     LOC = env['klm_model']
-    UNIGRAM_LOC = env['klm_model']
     UG_MODEL = env["ug_model"]
 
     lm = LM(loc=LOC)
