@@ -5,6 +5,7 @@
 
 ### Repo
 
+- To see how all runs see `demo.py`
 - For KenLM: `klm`
 - Preprocessing and experiments: `scripts`
 - For snippet algorithms/methods: `code/wellformedness.py`
