@@ -59,7 +59,7 @@ def shorten_sentence(comment, scorer, b=100, N=1000):
         if len(remove_long_dots) < b:
             ops.append((remove_long_dots, scorer(remove_long_dots)))
 
-    return ops
+    return list(set(ops))
 
 if __name__ == "__main__":
     stop_words = get_stops()
