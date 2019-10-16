@@ -3,7 +3,6 @@ import numpy as np
 import re
 from random import choice
 from klm.query import LM, get_unigram_probs
-from code.all import get_stops
 from klm.query import slor
 
 def print_me(ix, o):
@@ -16,6 +15,13 @@ def clean_dots(str_):
     remove_long_dots = re.sub(b, "...", fix_multi_dots)
     return remove_long_dots
 
+
+def unit2string(comment, included):
+    comment_snippet = [print_me(ix, o) for ix, o in zip(included, comment["tokens"])]
+    sequence = " ".join([o for o in comment_snippet if o != "..."])
+
+    remove_long_dots = clean_dots(" ".join(comment_snippet))
+    return remove_long_dots
 
 class SlorScorer(object):
     
@@ -31,9 +37,19 @@ class SlorScorer(object):
         return min(all_)
 
 
-def shorten_sentence(comment, scorer, b=100, N=1000):
+def shorten_sentence(comment, scorer, b=100, N=1000, verbose=False):
+    '''
+    return a string that is a shortened version of the sentence
+        b: max characters for the string
 
+    note on any scorer: higher number is better
+    '''
     ops = [(" ".join(comment["tokens"])[0:b], scorer(" ".join(comment["tokens"])[0:b]))] # default answer
+
+    if len(" ".join(comment["tokens"])) < b:
+        included = np.ones(len(comment))
+        remove_long_dots = unit2string(comment, included)
+        return remove_long_dots 
     
     for oo in range(N):
 
@@ -49,19 +65,19 @@ def shorten_sentence(comment, scorer, b=100, N=1000):
                 if i + d1 < len(included):
                     included[i + d1] = 0
 
-
-        comment_snippet = [print_me(ix, o) for ix, o in zip(included, comment["tokens"])]
-
-        sequence = " ".join([o for o in comment_snippet if o != "..."])
-
-        remove_long_dots = clean_dots(" ".join(comment_snippet))
-    
+        remove_long_dots = unit2string(comment, included)
+ 
         if len(remove_long_dots) < b:
             ops.append((remove_long_dots, scorer(remove_long_dots)))
 
-    return list(set(ops))
+    ops = list(set(ops))
+    ops.sort(key=lambda x:x[1], reverse=True)
+    if verbose:
+        print(ops[0:10])
+    return ops[0][0] 
 
 if __name__ == "__main__":
+    from code.all import get_stops
     stop_words = get_stops()
 
     ix = 13
@@ -86,6 +102,5 @@ if __name__ == "__main__":
 
     scorer = SlorScorer(lm=lm, up=up)
     ops = shorten_sentence(comments[ix], scorer.min_slor_scorer)
-    ops.sort(key=lambda x:x[1], reverse=True)
     print("***")
-    print(ops[0:4])
+    print(ops)
