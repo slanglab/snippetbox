@@ -1,6 +1,18 @@
 from stop_words import get_stop_words
+import json
 import string
 import numpy as np
+
+def load_fn(fn = "corpora/data_ccrit.spacy.jsonl"):
+    stop_words = get_stops()
+    comments = []
+    with open(fn, "r") as inf:
+        for i in inf:
+            i = json.loads(i)
+            i["tokens"] = [j for j in i["tokens"] if j.lower() not in stop_words] 
+            comments.append(i)
+    return comments
+
 
 def get_stops():
     stop_words = get_stop_words('en')
