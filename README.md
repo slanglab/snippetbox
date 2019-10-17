@@ -1,3 +1,11 @@
+### Other details 
+
+`demo.py` implements greedy algorithm here: https://ryanmcd.github.io/papers/globsumm.pdf
+
+As of Oct 17th
+- The salience function just averages the PMI of the top 5 most relevant tokens. 
+- The (pairwise) redundancy function is just the Jaccard index of the tokens in two sentences
+
 ### Installation
 
 1. Clone, create a python3 virtual enviroment and $pip install -r requirements.txt
