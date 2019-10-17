@@ -20,7 +20,7 @@ class PMI(object):
         V = set(v for doc in docs for v in doc["tokens"])
 
         if stop_words is not None:
-            V = set(i for i in V if i not in stop_words)
+            V = set(i for i in V if i.lower() not in stop_words)
         else:
             stop_words = []  # needed for loop below
 
@@ -37,7 +37,7 @@ class PMI(object):
         for docno, doc in enumerate(docs):
             toks = doc["tokens"]
             for tok in toks:
-                if tok not in stop_words:
+                if tok in V:
                     tdm[self.v2n[tok]][doc["docid"]] += 1
 
         self.grand_total = np.sum(tdm)

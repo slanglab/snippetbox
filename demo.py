@@ -26,11 +26,15 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='McDonald Greedy Summarizer')
     
-    parser.add_argument('--b', dest='b', type=int)
-    parser.add_argument('--K', dest='K', type=int)
+    parser.add_argument('-b', dest='b', type=int, default=None)
+    parser.add_argument('-K', dest='K', type=int, default=3)
     parser.add_argument("--verbose", dest='verbose', action='store_true')
+    parser.add_argument("-idea", dest="idea")
 
     args = parser.parse_args()
+
+    if args.idea is None:
+        assert "you need" == "to specify an idea"
 
     DEV = {
             'klm_model': "/Users/ahandler/research/snippetbox/klm/all_gw.binary",
@@ -49,23 +53,22 @@ if __name__ == "__main__":
     print(args)
 
     stop_words = get_stops()
-    idea = 'Platform connected with bridges'
  
-    #preprocess()
+    preprocess()
     comments = load_fn()
 
-    subset_ids = [o["docid"] for o in comments if o["idea"] == idea]
+    subset_ids = [o["docid"] for o in comments if o["idea"] == args.idea]
 
     start_time =  datetime.datetime.now()    
     pmi = PMI(comments, stop_words)
-    smi = SaliencePMI(pmi, context_ids=subset_ids)
+    smi = SaliencePMI(pmi, context_ids=subset_ids, stops=stop_words)
     end_time = datetime.datetime.now()
     print("[*] Computing salience took {}".format((end_time - start_time).total_seconds())) 
 
     if args.verbose:
         debug_pmi(args.K, idea, subset_ids)
     
-    subset_docs = [o for o in comments if o["idea"] == idea]
+    subset_docs = [o for o in comments if o["idea"] == args.idea]
 
     start_time =  datetime.datetime.now()    
     sum_ = greedy_macdonald(K=args.K, textual_units=subset_docs,

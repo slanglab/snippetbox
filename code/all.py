@@ -19,7 +19,7 @@ def get_stops():
     stop_words = stop_words + [o for o in string.punctuation] 
     stop_words = stop_words + ["'s", "nt", "n't", ' ']
     stop_words = stop_words + ["San", "Diego", "El", "Nudillo"]
-    return stop_words
+    return [i.lower() for i in stop_words]
 
 
 def jaccard(s1,s2):
@@ -56,20 +56,24 @@ class SaliencePMI(object):
     Heuristically penalize short comments.
     '''
 
-    def __init__(self, pmi, context_ids):
+    def __init__(self, pmi, context_ids, stops):
         self.pmi = pmi
         self.context_ids = context_ids
+        self.stops = stops
 
     def salience(self, textual_unit):
         '''
         Salience operates on a textual_unit (e.g. sentence or paragraph)
             - For community crit, its comments
         '''
-        pmis = [self.pmi.compute_pmi(o, self.context_ids) for o in textual_unit["tokens"]]
-        if len(pmis) < 3:
+        pmis = [self.pmi.compute_pmi(o, self.context_ids) for o in textual_unit["tokens"] if o.lower() not in self.stops]
+        if len(pmis) <= 3: # avoid weird short sentences
             return 0
         else:
-            return np.sum(pmis)/len(pmis)
+            pmis.sort(reverse=True)
+            # pmi for top 5 tokens. Otherwise it penalizes long sentences 
+            # b/c many sentences have lots of words w/ min PMI
+            return np.sum(pmis[0:5])/len(pmis)
 
 
 def get_ranked_textual_units(units, f_salience):
@@ -100,7 +104,7 @@ def stupid_sum(K, textual_units, f_salience, f_redundancy):
     pass
 
 
-def greedy_macdonald(K, textual_units, f_salience, f_redundancy, b=None, N=1000, scorer=None):
+def greedy_macdonald(K, textual_units, f_salience, f_redundancy, b=None, N=1000, scorer=None, verbose=False):
     '''
     Greedy approximation from the McDonald paper. It's pretty similar to sumbasic
 
@@ -109,9 +113,9 @@ def greedy_macdonald(K, textual_units, f_salience, f_redundancy, b=None, N=1000,
     ranked_units_remaining = get_ranked_textual_units(textual_units, f_salience)
     summary = []
 
-    max_so_far = -100000000000000
 
     while len(summary) < K:
+        max_so_far = -100000000000000
 
         # safety checks
         if len(summary) == len(textual_units):
@@ -126,8 +130,11 @@ def greedy_macdonald(K, textual_units, f_salience, f_redundancy, b=None, N=1000,
             if score_for_this > max_so_far:
                 add_this = s 
                 max_so_far = score_for_this
+                if verbose:
+                    print(add_this["tokens"], score_for_this)
 
-        ranked_units_remaining.remove(add_this)
+        if add_this is not None:
+            ranked_units_remaining.remove(add_this)
 
         if b is not None:
             print_as = shorten_sentence(add_this, scorer, b=b, N=N)

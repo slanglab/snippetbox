@@ -18,7 +18,8 @@ def preprocess():
 
     with open("corpora/data_ccrit.spacy.jsonl", "w") as of:
 
-        for docid, comment in enumerate(comments):
+        docid = 0
+        for ix, comment in enumerate(comments):
 
             # returns a token stream
             doc = nlp(comment['comment'])
@@ -38,11 +39,14 @@ def preprocess():
 
             comment["tokens"] = tokens
 
-            comment["docid"] = docid
 
             comment["sentences"] = sentences
 
-            of.write(json.dumps(comment) + "\n")
+            if " ".join(tokens).lower() != "need more information":
+                if " ".join(tokens).lower() != "not enough information": 
+                    comment["docid"] = docid
+                    docid += 1
+                    of.write(json.dumps(comment) + "\n")
 
 
 if __name__ == "__main__":
