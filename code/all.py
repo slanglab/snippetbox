@@ -1,6 +1,5 @@
 from stop_words import get_stop_words
 import json
-from code.wellformedness import shorten_sentence
 import string
 import numpy as np
 
@@ -104,7 +103,7 @@ def stupid_sum(K, textual_units, f_salience, f_redundancy):
     pass
 
 
-def greedy_macdonald(K, textual_units, f_salience, f_redundancy, b=None, N=1000, scorer=None, verbose=False):
+def greedy_macdonald(K, textual_units, f_salience, f_redundancy, N=1000, scorer=None, verbose=False):
     '''
     Greedy approximation from the McDonald paper. It's pretty similar to sumbasic
 
@@ -136,11 +135,7 @@ def greedy_macdonald(K, textual_units, f_salience, f_redundancy, b=None, N=1000,
         if add_this is not None:
             ranked_units_remaining.remove(add_this)
 
-        if b is not None:
-            print_as = shorten_sentence(add_this, scorer, b=b, N=N)
-            add_this["print_as"] = print_as
-        else:
-            add_this["print_as"] = " ".join(add_this["tokens"])
+        add_this["print_as"] = " ".join(add_this["tokens"])
 
         summary = summary + [add_this]
 
