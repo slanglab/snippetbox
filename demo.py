@@ -10,7 +10,7 @@ from code.all import load_fn
 from scripts.preprocess_civic import preprocess
 #from klm.query import LM, get_unigram_probs
 from code.all import score
-from code.wellformedness import SlorScorer
+#from code.wellformedness import SlorScorer
 
 def debug_pmi(K, idea, subset_ids):
 
