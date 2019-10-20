@@ -3,8 +3,9 @@ from __future__ import division
 import kenlm
 import json
 
-# for corpus formatting see-> https://kheafield.com/code/kenlm/estimation/ esp on <s> and </s> tags
-# https://github.com/kpu/kenlm/blob/master/python/example.py. what's up w/ <s> and </s>
+
+## NO DO NOT USE <s> and </s> tags see score function here 
+## https://github.com/kpu/kenlm/blob/f39edc306026a9bce47249b30a0a4e68bfbd6fa4/python/kenlm.pyx
 
 def get_unigram_probs(unigram_loc):
     with open(unigram_loc, "r") as inf:
@@ -36,7 +37,7 @@ class LM:
 
     def score(self, str_, verbose=False):
         # str_ is a " "-delimited string, e.g. "I am a student"
-        words = ['<s>'] + str_.split() + ['</s>']
+        words = str_.split()
 
 
         if verbose:
@@ -86,3 +87,18 @@ if __name__ == "__main__":
 
     print("[*] slor: American troops gave gifts")
     print(slor("American troops gave gifts", lm, up))
+
+    print("[*] 'get the shampoo distributed evenly'")
+    print(slor('get the shampoo distributed evenly', lm, up))
+
+    print("[*] 'the shampoo distributed evenly'")
+    print(slor('The shampoo distributed evenly', lm, up))
+
+
+    print("[*] 'Our puppy learned some things'")
+    print(slor('Our puppy learned some things', lm, up))
+
+
+
+    print("[*] 'learned some things'")
+    print(slor('learned some things', lm, up))

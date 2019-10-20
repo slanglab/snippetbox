@@ -8,7 +8,7 @@ from code.all import jaccard
 from code.all import greedy_macdonald
 from code.all import load_fn
 from scripts.preprocess_civic import preprocess
-from klm.query import LM, get_unigram_probs
+#from klm.query import LM, get_unigram_probs
 from code.all import score
 from code.wellformedness import SlorScorer
 
@@ -36,19 +36,7 @@ if __name__ == "__main__":
     if args.idea is None:
         assert "you need" == "to specify an idea"
 
-    DEV = {
-            'klm_model': "/Users/ahandler/research/snippetbox/klm/all_gw.binary",
-            'ug_model': "/Users/ahandler/research/snippetbox/klm/all_gw.unigrams.json"
-    }
-
-    env = DEV
-    LOC = env['klm_model']
-    UG_MODEL = env["ug_model"]
-
-    lm = LM(loc=LOC)
-    up = get_unigram_probs(UG_MODEL)
-
-    scorer = SlorScorer(lm=lm, up=up)
+    scorer = None
 
     print(args)
 
@@ -74,7 +62,7 @@ if __name__ == "__main__":
     sum_ = greedy_macdonald(K=args.K, textual_units=subset_docs,
                             f_salience=smi.salience,
                             f_redundancy=jaccard,
-                            scorer=scorer.min_slor_scorer,
+                            scorer=None,
                             b=None)#args.b) 
     end_time =  datetime.datetime.now()    
 
