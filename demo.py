@@ -62,8 +62,8 @@ if __name__ == "__main__":
     sum_ = greedy_macdonald(K=args.K, textual_units=subset_docs,
                             f_salience=smi.salience,
                             f_redundancy=jaccard,
-                            scorer=None,
-                            b=None)#args.b) 
+                            scorer=None
+                            )
     end_time =  datetime.datetime.now()    
 
     print("***")
