@@ -72,7 +72,7 @@ class SaliencePMI(object):
             pmis.sort(reverse=True)
             # pmi for top 5 tokens. Otherwise it penalizes long sentences 
             # b/c many sentences have lots of words w/ min PMI
-            return np.sum(pmis[0:5])/len(pmis)
+            return np.sum(pmis[0:5])/len(pmis[0:5])
 
 
 def get_ranked_textual_units(units, f_salience):
