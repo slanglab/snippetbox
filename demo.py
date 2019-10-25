@@ -30,7 +30,10 @@ if __name__ == "__main__":
     parser.add_argument('-K', dest='K', type=int, default=3)
     parser.add_argument("--verbose", dest='verbose', action='store_true')
     parser.add_argument("-idea", dest="idea")
-
+    parser.add_argument("-data", dest="data")
+    ''' 
+       There are 2 datasets in the corpora - ccrit and envcanada.
+    '''
     args = parser.parse_args()
 
     if args.idea is None:
@@ -42,8 +45,10 @@ if __name__ == "__main__":
 
     stop_words = get_stops()
  
-    preprocess()
-    comments = load_fn()
+    spacy_data = "corpora/data_" + args.data + ".spacy.jsonl"
+ 
+    preprocess(args.data)
+    comments = load_fn(spacy_data)
 
     subset_ids = [o["docid"] for o in comments if o["idea"] == args.idea]
 
@@ -54,7 +59,7 @@ if __name__ == "__main__":
     print("[*] Computing salience took {}".format((end_time - start_time).total_seconds())) 
 
     if args.verbose:
-        debug_pmi(args.K, idea, subset_ids)
+        debug_pmi(args.K, args.idea, subset_ids)
     
     subset_docs = [o for o in comments if o["idea"] == args.idea]
 

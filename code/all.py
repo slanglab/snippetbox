@@ -3,7 +3,7 @@ import json
 import string
 import numpy as np
 
-def load_fn(fn = "corpora/data_ccrit.spacy.jsonl"):
+def load_fn(fn):
     stop_words = get_stops()
     comments = []
     with open(fn, "r") as inf:
@@ -17,7 +17,7 @@ def get_stops():
     stop_words = get_stop_words('en')
     stop_words = stop_words + [o for o in string.punctuation] 
     stop_words = stop_words + ["'s", "nt", "n't", ' ']
-    stop_words = stop_words + ["San", "Diego", "El", "Nudillo"]
+    stop_words = stop_words + ["San", "Diego", "El", "Nudillo", "plastic"]
     return [i.lower() for i in stop_words]
 
 

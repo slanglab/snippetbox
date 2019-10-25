@@ -8,15 +8,18 @@ import phrasemachine
 from spacy.pipeline import Sentencizer
 sentencizer = Sentencizer()
 
-def preprocess():
+def preprocess(dataset):
 
     nlp = spacy.load("en_core_web_sm")
     nlp.add_pipe(sentencizer, before="parser") 
-    
-    with open("corpora/data_ccrit.json", "r") as inf:
+
+    input_data = "corpora/data_" + dataset + ".json"
+    output_spacy = "corpora/data_" + dataset + ".spacy.jsonl"
+
+    with open(input_data, "r") as inf:
         comments = json.load(inf)
 
-    with open("corpora/data_ccrit.spacy.jsonl", "w") as of:
+    with open(output_spacy, "w") as of:
 
         docid = 0
         for ix, comment in enumerate(comments):
