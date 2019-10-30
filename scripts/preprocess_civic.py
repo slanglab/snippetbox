@@ -5,6 +5,8 @@ Preprocess the community crit dataset using spacy and phrasemachine
 import spacy
 import json
 import phrasemachine
+import string
+import re
 from spacy.pipeline import Sentencizer
 sentencizer = Sentencizer()
 
@@ -24,10 +26,19 @@ def preprocess(dataset):
         docid = 0
         for ix, comment in enumerate(comments):
 
+            doc = comment['comment'] 
+
+            #remove punctuation
+            doc = doc.translate(str.maketrans('','', string.punctuation))
+
+            # remove whitespaces
+            doc = re.sub(r"\s+", " ", doc)
+
             # returns a token stream
-            doc = nlp(comment['comment'])
+            doc = nlp(doc)
 
             tokens = [token.text for token in doc]
+            #tokens = [token.lemma_ for token in doc]
             pos = [token.pos_ for token in doc]
             
             #tok spans for sentences
@@ -41,7 +52,6 @@ def preprocess(dataset):
             comment["phrases"] = list(phrases["counts"].keys())
 
             comment["tokens"] = tokens
-
 
             comment["sentences"] = sentences
 
