@@ -64,16 +64,25 @@ class SaliencePMI(object):
         '''
         Salience operates on a textual_unit (e.g. sentence or paragraph)
             - For community crit, its comments
+
+        Note: if the textual unit already has a cached salience field then
+              just go and return this without recomputing. Other salience
+              functions should also support
+
         '''
+        if "salience" in textual_unit:
+            return textual_unit["salience"]
+
         pmis = [self.pmi.compute_pmi(o, self.context_ids) for o in textual_unit["tokens"] if o.lower() not in self.stops]
         if len(pmis) <= 3: # avoid weird short sentences
-            return 0
+            salience = 0
         else:
             pmis.sort(reverse=True)
             # pmi for top 5 tokens. Otherwise it penalizes long sentences 
             # b/c many sentences have lots of words w/ min PMI
-            return np.sum(pmis[0:5])/len(pmis[0:5])
-
+            salience = np.sum(pmis[0:5])/len(pmis[0:5])
+        textual_unit["salience"]  = salience
+        return textual_unit["salience"]
 
 def get_ranked_textual_units(units, f_salience):
 
