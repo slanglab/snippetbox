@@ -15,7 +15,7 @@ def load_fn(fn):
 
 def get_stops():
     stop_words = get_stop_words('en')
-    stop_words = stop_words + [o for o in string.punctuation] 
+    stop_words = stop_words + [o for o in string.punctuation]
     stop_words = stop_words + ["'s", "nt", "n't", ' ']
     stop_words = stop_words + ["San", "Diego", "El", "Nudillo", "plastic"]
     return [i.lower() for i in stop_words]
@@ -78,7 +78,7 @@ class SaliencePMI(object):
             salience = 0
         else:
             pmis.sort(reverse=True)
-            # pmi for top 5 tokens. Otherwise it penalizes long sentences 
+            # pmi for top 5 tokens. Otherwise it penalizes long sentences
             # b/c many sentences have lots of words w/ min PMI
             salience = np.sum(pmis[0:5])/len(pmis[0:5])
         textual_unit["salience"]  = salience
@@ -121,7 +121,6 @@ def greedy_macdonald(K, textual_units, f_salience, f_redundancy, N=1000, scorer=
     ranked_units_remaining = get_ranked_textual_units(textual_units, f_salience)
     summary = []
 
-
     while len(summary) < K:
         max_so_far = -100000000000000
 
@@ -136,7 +135,7 @@ def greedy_macdonald(K, textual_units, f_salience, f_redundancy, N=1000, scorer=
         for s in ranked_units_remaining:
             score_for_this = score(summary + [s], f_salience, f_redundancy)
             if score_for_this > max_so_far:
-                add_this = s 
+                add_this = s
                 max_so_far = score_for_this
                 if verbose:
                     print(add_this["tokens"], score_for_this)

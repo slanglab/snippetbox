@@ -19,19 +19,19 @@ def debug_pmi(K, idea, subset_ids):
     for i in pmi.rank_V_by_pmi(subset_ids)[0:K]:
         print(i)
 
-                
+
 if __name__ == "__main__":
 
     import argparse
 
     parser = argparse.ArgumentParser(description='McDonald Greedy Summarizer')
-    
+
     parser.add_argument('-b', dest='b', type=int, default=None)
     parser.add_argument('-K', dest='K', type=int, default=3)
     parser.add_argument("--verbose", dest='verbose', action='store_true')
     parser.add_argument("-idea", dest="idea")
     parser.add_argument("-data", dest="data")
-    ''' 
+    '''
        There are 2 datasets in the corpora - ccrit and envcanada.
     '''
     args = parser.parse_args()
@@ -44,36 +44,37 @@ if __name__ == "__main__":
     print(args)
 
     stop_words = get_stops()
- 
+
     spacy_data = "corpora/data_" + args.data + ".spacy.jsonl"
- 
+
     preprocess(args.data)
     comments = load_fn(spacy_data)
 
     subset_ids = [o["docid"] for o in comments if o["idea"] == args.idea]
 
-    start_time =  datetime.datetime.now()    
+    start_time =  datetime.datetime.now()
     pmi = PMI(comments, stop_words)
     smi = SaliencePMI(pmi, context_ids=subset_ids, stops=stop_words)
     end_time = datetime.datetime.now()
-    print("[*] Computing salience took {}".format((end_time - start_time).total_seconds())) 
+    print("[*] Computing salience took {}".format((end_time - start_time).total_seconds()))
 
     if args.verbose:
         debug_pmi(args.K, args.idea, subset_ids)
-    
+
     subset_docs = [o for o in comments if o["idea"] == args.idea]
 
-    start_time =  datetime.datetime.now()    
+    start_time =  datetime.datetime.now()
     sum_ = greedy_macdonald(K=args.K, textual_units=subset_docs,
                             f_salience=smi.salience,
                             f_redundancy=jaccard,
                             scorer=None
                             )
-    end_time =  datetime.datetime.now()    
+    end_time =  datetime.datetime.now()
 
     print("***")
     for s in sum_:
-        print(s["print_as"])
+        # print(s["print_as"])
+        print(s["presentation_text"])
 
     delta = (end_time - start_time)
 
