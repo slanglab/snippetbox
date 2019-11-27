@@ -1,6 +1,7 @@
 
 import json
 import datetime
+import math
 from code.salience import PMI
 from code.all import get_stops
 from code.all import SaliencePMI
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='McDonald Greedy Summarizer')
 
     parser.add_argument('-b', dest='b', type=int, default=None)
-    parser.add_argument('-K', dest='K', type=int, default=3)
+    # parser.add_argument('-K', dest='K', type=int, default=K)
     parser.add_argument("--verbose", dest='verbose', action='store_true')
     parser.add_argument("-idea", dest="idea")
     parser.add_argument("-data", dest="data")
@@ -58,13 +59,19 @@ if __name__ == "__main__":
     end_time = datetime.datetime.now()
     print("[*] Computing salience took {}".format((end_time - start_time).total_seconds()))
 
-    if args.verbose:
-        debug_pmi(args.K, args.idea, subset_ids)
-
     subset_docs = [o for o in comments if o["idea"] == args.idea]
 
+    '''
+        Setting K based on the number of comments in the idea
+    '''
+
+    K = math.ceil(math.log2(len(subset_docs)))
+
+    if args.verbose:
+        debug_pmi(K, args.idea, subset_ids)
+
     start_time =  datetime.datetime.now()
-    sum_ = greedy_macdonald(K=args.K, textual_units=subset_docs,
+    sum_ = greedy_macdonald(K=K, textual_units=subset_docs,
                             f_salience=smi.salience,
                             f_redundancy=jaccard,
                             scorer=None
