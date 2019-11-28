@@ -13,7 +13,7 @@ sentencizer = Sentencizer()
 def preprocess(dataset):
 
     nlp = spacy.load("en_core_web_sm")
-    nlp.add_pipe(sentencizer, before="parser") 
+    nlp.add_pipe(sentencizer, before="parser")
 
     input_data = "corpora/data_" + dataset + ".json"
     output_spacy = "corpora/data_" + dataset + ".spacy.jsonl"
@@ -26,7 +26,8 @@ def preprocess(dataset):
         docid = 0
         for ix, comment in enumerate(comments):
 
-            doc = comment['comment'] 
+            ori_doc = comment['comment']
+            doc = comment['comment']
 
             #remove punctuation
             doc = doc.translate(str.maketrans('','', string.punctuation))
@@ -40,7 +41,7 @@ def preprocess(dataset):
             tokens = [token.text for token in doc]
             #tokens = [token.lemma_ for token in doc]
             pos = [token.pos_ for token in doc]
-            
+
             #tok spans for sentences
             sentences = [(o.start, o.end) for o in doc.sents]
 
@@ -55,8 +56,10 @@ def preprocess(dataset):
 
             comment["sentences"] = sentences
 
+            comment["presentation_text"] = ori_doc
+
             if " ".join(tokens).lower() != "need more information":
-                if " ".join(tokens).lower() != "not enough information": 
+                if " ".join(tokens).lower() != "not enough information":
                     comment["docid"] = docid
                     docid += 1
                     of.write(json.dumps(comment) + "\n")
