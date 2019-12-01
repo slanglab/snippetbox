@@ -119,6 +119,7 @@ def greedy_macdonald(K, textual_units, f_salience, f_redundancy, N=1000, scorer=
     interestingly: this algo is quadratic. It makes K passes thru the list
     '''
     ranked_units_remaining = get_ranked_textual_units(textual_units, f_salience)
+
     summary = []
 
     while len(summary) < K:

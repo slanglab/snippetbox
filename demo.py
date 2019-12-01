@@ -80,8 +80,8 @@ if __name__ == "__main__":
 
     print("***")
     for s in sum_:
-        # print(s["print_as"])
-        print(s["presentation_text"])
+        # print(s["presentation_text"])
+        print(str(s["presentation_text_short"]) + "...")
 
     delta = (end_time - start_time)
 

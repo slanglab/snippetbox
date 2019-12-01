@@ -56,7 +56,9 @@ def preprocess(dataset):
 
             comment["sentences"] = sentences
 
-            comment["presentation_text"] = ori_doc
+            comment["presentation_text_full"] = ori_doc
+
+            comment["presentation_text_short"] = str(list(doc.sents)[0])
 
             if " ".join(tokens).lower() != "need more information":
                 if " ".join(tokens).lower() != "not enough information":
